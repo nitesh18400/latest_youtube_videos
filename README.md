@@ -79,20 +79,20 @@ Complete the User Creation Flow after entering required details
 
 Now you can access the Django Admin Panel using the following URL: `http://localhost:8000/admin/`
 
-![img_1.png](readmeImages/img_1.png)
+![img_1.png](readme_images/img_1.png)
 
-![img_1.png](readmeImages/img_2.png)
+![img_1.png](readme_images/img_2.png)
 
 # Dashboard UI Pages
 
 **Latest Videos Page (With Pagination)**
 
-![img_1.png](readmeImages/img_3.png)
+![img_1.png](readme_images/img_3.png)
 
 **Search Videos Page**
 
-![img_1.png](readmeImages/img_4.png)
+![img_1.png](readme_images/img_4.png)
 
 **Add Google API Key Page**
 
-![img_1.png](readmeImages/img_5.png)
+![img_1.png](readme_images/img_5.png)
