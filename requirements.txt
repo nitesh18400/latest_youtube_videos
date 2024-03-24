@@ -1,0 +1,7 @@
+Django
+google-api-python-client
+celery
+redis
+python-dotenv
+django-celery-beat
+djangorestframework
