@@ -70,7 +70,7 @@ class FetchVideoService(ServiceBase):
                 video_title = snippet['title']
                 description = snippet['description']
                 published_at = datetime.strptime(snippet['publishedAt'], '%Y-%m-%dT%H:%M:%SZ')
-                thumbnail_url = snippet['thumbnails']['high']
+                thumbnail_url = snippet['thumbnails']['high']['url']
                 yt_unique_id = item['id']['videoId']
 
                 if self._video_service.fetch_video(yt_unique_id):
