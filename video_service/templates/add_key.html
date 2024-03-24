@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Google API Key</title>
+    <style>
+        /* Add your CSS styles here */
+        .api-key-form {
+            margin-top: 50px;
+            text-align: center;
+        }
+
+        .api-key-input {
+            padding: 8px;
+            font-size: 16px;
+            width: 300px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+
+        .add-key-button {
+            padding: 8px 16px;
+            font-size: 16px;
+            background-color: #886ab5;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="api-key-form">
+        <label for="apiKey">Google API Key:</label>
+        <input type="text" class="api-key-input" id="apiKey" placeholder="Enter your Google API key...">
+        <button type="button" class="add-key-button" onclick="addApiKey()">Add Key</button>
+    </div>
+</div>
+<script>
+    // Function to add Google API key
+    function addApiKey() {
+        const apiKey = document.getElementById('apiKey').value.trim();
+        if (apiKey === '') {
+            alert('Please enter a Google API key');
+            return;
+        }
+
+        fetch('/api/add-key/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                api_key: apiKey
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to add API key');
+            }
+            return response.json();
+        })
+        .then(data => {
+            alert('API key added successfully');
+        })
+        .catch(error => {
+            console.error('Error adding API key:', error);
+        });
+    }
+</script>
+</body>
+</html>

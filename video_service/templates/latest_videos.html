@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Latest Videos</title>
+    <style>
+        /* Add your CSS styles here */
+        .videos {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .card {
+            border: 1px solid #ccc;
+            margin-bottom: 20px;
+            width: calc(50% - 10px); /* Subtracting margin from half of the container */
+            box-sizing: border-box; /* Ensuring borders and padding are included in the width */
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .card-title {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .card-text {
+            margin-bottom: 15px;
+        }
+
+        .text-muted {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .pagination {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .pagination button {
+            margin: 0 5px;
+            padding: 5px 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="subheader">
+        <h1 class="subheader-title">
+            <i class="subheader-icon fal fa-video"></i> Latest Videos
+
+        </h1>
+    </div>
+    <div class="videos" id="videos-container">
+        <!-- Video cards will be dynamically added here -->
+    </div>
+
+
+    <div class="col-lg">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+                <li class="page-item">
+                    <a class="prev page-link" aria-label="Previous">
+                        <span aria-hidden="true"><i class="fal fa-hand-point-left"></i></span>
+                    </a>
+                </li>
+                <li class="page-item"><a class="page-info page-link" href="#">{{ current_page }}</a></li>
+                <li class="page-item">
+                    <a class="next page-link" aria-label="Next">
+                        <span aria-hidden="true"><i class="fal fa-hand-point-right"></i></span>
+                    </a>
+                </li>
+
+
+            </ul>
+        </nav>
+    </div>
+</div>
+<script>
+    // Function to fetch videos from the backend
+    function fetchVideos(page, pageSize) {
+        const url = `/api/videos/?page=${page}&pageSize=${pageSize}`;
+
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch videos');
+                }
+                return response.json();
+            })
+            .then(data => {
+                updateUI(data);
+            })
+            .catch(error => {
+                console.error('Error fetching videos:', error);
+            });
+    }
+
+    // Function to update the UI with the fetched videos
+    function updateUI(data) {
+        const videosContainer = document.getElementById('videos-container');
+        videosContainer.innerHTML = '';
+
+        data["videos"].forEach(video => {
+            const publishedDate = new Date(video.published_at).toLocaleString('en-IN', {
+                timeZone: 'Asia/Kolkata', // Convert to IST
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: 'numeric',
+                minute: 'numeric',
+                second: 'numeric'
+            });
+            const card = document.createElement('div');
+            card.classList.add('card');
+            card.innerHTML = `
+                    <div class="w-100 bg-fusion-50 rounded-top border-top-right-radius-0" style="padding:40px 0 40px; background-image: url('${video.thumbnail_url}'); background-size: cover; height: 200px;"></div>
+                    <div class="card-body">
+                        <h5 class="card-title">${video.title}</h5>
+                        <p class="card-text">${video.description}</p>
+                        <small class="text-muted">Published At: ${publishedDate}</small>
+                    </div>
+                `;
+            videosContainer.appendChild(card);
+        });
+
+        const pageInfo = document.querySelector('.page-info');
+        pageInfo.textContent = `Page ${data.current_page} of ${data.last_page}`;
+    }
+
+    // Event listeners for pagination buttons
+    document.querySelector('.prev').addEventListener('click', () => {
+        const currentPage = parseInt(document.querySelector('.page-info').textContent.split(' ')[1]);
+        if (currentPage > 1) {
+            fetchVideos(currentPage - 1, 5);
+        }
+    });
+
+    document.querySelector('.next').addEventListener('click', () => {
+        const currentPage = parseInt(document.querySelector('.page-info').textContent.split(' ')[1]);
+        const totalPages = parseInt(document.querySelector('.page-info').textContent.split(' ')[3]);
+        if (currentPage < totalPages) {
+            fetchVideos(currentPage + 1, 5);
+        }
+    });
+
+    // Initial fetch for the first page of videos
+    fetchVideos(1, 5);
+</script>
+</body>
+</html>

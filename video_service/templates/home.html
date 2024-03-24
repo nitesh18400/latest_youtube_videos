@@ -1,0 +1,91 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Payment Dashboard</title>
+    <meta name="description" content="Introduction">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no, minimal-ui">
+    <!-- Call App Mode on ios devices -->
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <!-- Remove Tap Highlight on Windows Phone IE -->
+    <meta name="msapplication-tap-highlight" content="no">
+    <META NAME="robots" CONTENT="noindex,nofollow">
+    <!-- base css -->
+    <link rel="stylesheet" media="screen, print" href="{% static 'css/vendors.bundle.css' %}">
+    <link rel="stylesheet" media="screen, print" href="{% static 'css/app.bundle.css' %}">
+    <link rel="stylesheet" media="screen, print" href="{% static 'css/datatables.min.css' %}">
+    <link rel="stylesheet" media="screen, print" href="{% static 'css/dropzone.css' %}">
+
+    <!-- Place favicon.ico in the root directory -->
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'img/favicon/apple-touch-icon.png' %}">
+    <link rel="icon" href="{% static 'img/favicon/favicon.ico' %}" type="image/x-icon">
+    <link rel="mask-icon" href="{% static 'img/favicon/safari-pinned-tab.svg' %}" color="#5bbad5">
+    <script src="{% static 'js/vendors.bundle.js' %}"></script>
+    <script src="{% static 'js/datatables.min.js' %}"></script>
+    <script src="{% static 'js/dropzone.js' %}"></script>
+</head>
+<body class="mod-bg-1 mod-nav-link desktop chrome webkit pace-done blur">
+<div id="custom-loader">
+    <div class="width-100 flex-center">Loading . . .</div>
+</div>
+<div class="page-wrapper">
+    <div class="page-inner">
+        <!-- BEGIN Left Aside -->
+        {% include 'nav.html' %}
+        <!-- END Left Aside -->
+        <div class="page-content-wrapper">
+            {% include 'header.html' %}
+            <main id="js-page-content" role="main" class="page-content">
+                {% if show_search_videos %}
+                    {% include 'video_search.html' %}
+                {% endif %}
+                {% if show_latest_videos %}
+                    {% include 'latest_videos.html' %}
+                {% endif %}
+                {% if show_add_key %}
+                    {% include 'add_key.html' %}
+                {% endif %}
+            </main>
+        </div>
+    </div>
+
+
+</div>
+
+
+{% include 'base.html' %}
+
+<script src="{% static 'js/app.bundle.js' %}"></script>
+<script>
+
+    $("#custom-loader").hide();
+
+    function navigation(viewType) {
+        console.log(viewType)
+        switch (viewType) {
+            case "latest_videos":
+                window.open("{% url 'latest-videos' %}", "_self")
+                break;
+            case "search_videos":
+                window.open("{% url 'video-search' %}", "_self")
+                break;
+            case "add_keys":
+                window.open("{% url 'add-key' %}", "_self")
+                break;
+        }
+        url = ""
+        window.open(url, "_self")
+    }
+
+    function copy(copyText) {
+        navigator.clipboard.writeText(copyText)
+        toastr["success"]("Copied Text to Clipboard", "Copied");
+    }
+
+</script>
+<!-- END Body -->
+
+</body>
+</html>

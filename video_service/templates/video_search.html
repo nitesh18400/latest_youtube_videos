@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Videos</title>
+    <style>
+        /* Add your CSS styles here */
+        .videos {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .card {
+            border: 1px solid #ccc;
+            margin-bottom: 20px;
+            width: calc(50% - 10px); /* Subtracting margin from half of the container */
+            box-sizing: border-box; /* Ensuring borders and padding are included in the width */
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .card-title {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .card-text {
+            margin-bottom: 15px;
+        }
+
+        .text-muted {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .search-form {
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            padding: 8px;
+            font-size: 16px;
+            width: 300px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .search-button {
+            padding: 8px 16px;
+            font-size: 16px;
+            background-color: #886ab5;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="subheader">
+        <h1 class="subheader-title">
+            <i class="subheader-icon fal fa-video"></i> Search Videos
+            <small> You can only search for last 3 hours published video </small>
+        </h1>
+    </div>
+    <form class="search-form" >
+        <input type="text" class="search-input" id="searchQuery" placeholder="Search videos...">
+        <button type="button" class="search-button" onclick="searchVideos()">Search</button>
+    </form>
+    <div class="videos" id="videos-container">
+        <!-- Video cards will be dynamically added here -->
+    </div>
+</div>
+<script>
+    // Function to fetch videos based on search query
+    function searchVideos() {
+        console.log("button clicked")
+        const searchQuery = document.getElementById('searchQuery').value.trim();
+        if (searchQuery === '') {
+            alert('Please enter a search query');
+            return;
+        }
+        console.log(`/api/search/?query=${searchQuery}`)
+
+        fetch(`/api/search/?query=${searchQuery}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to search videos');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(data)
+                updateUI(data.videos);
+            })
+            .catch(error => {
+                console.error('Error searching videos:', error);
+            });
+    }
+
+    // Function to update the UI with the fetched videos
+    function updateUI(videos) {
+        const videosContainer = document.getElementById('videos-container');
+        videosContainer.innerHTML = '';
+
+        if (videos.length === 0) {
+            const noVideosMessage = document.createElement('p');
+            noVideosMessage.textContent = 'No videos found.';
+            videosContainer.appendChild(noVideosMessage);
+            return;
+        }
+
+        videos.forEach(video => {
+            const publishedDate = new Date(video.published_at).toLocaleString('en-IN', {
+                timeZone: 'Asia/Kolkata', // Convert to IST
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: 'numeric',
+                minute: 'numeric',
+                second: 'numeric'
+            });
+            const card = document.createElement('div');
+            card.classList.add('card');
+            card.innerHTML = `
+                    <div class="w-100 bg-fusion-50 rounded-top border-top-right-radius-0" style="padding:40px 0 40px; background-image: url('${video.thumbnail_url}'); background-size: cover; height: 200px;"></div>
+                    <div class="card-body">
+                        <h5 class="card-title">${video.title}</h5>
+                        <p class="card-text">${video.description}</p>
+                        <small class="text-muted">Published At: ${publishedDate}</small>
+                    </div>
+                `;
+            videosContainer.appendChild(card);
+        });
+    }
+</script>
+</body>
+</html>

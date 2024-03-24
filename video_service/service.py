@@ -14,6 +14,10 @@ class YouTubeAPIService(ServiceBase):
         return GoogleAPIClientKeyRepository.get_active_api_key()
 
     @staticmethod
+    def get_all_active_api_keys():
+        return GoogleAPIClientKeyRepository.get_all_active_api_keys()
+
+    @staticmethod
     def deactivate_api_key(api_key: GoogleAPIClientKey):
         return GoogleAPIClientKeyRepository.deactivate_api_key(api_key)
 
@@ -27,6 +31,10 @@ class VideoService(ServiceBase):
     @staticmethod
     def fetch_video(yt_unique_id):
         return VideoRepository.fetch_video(yt_unique_id)
+
+    @staticmethod
+    def fetch_videos():
+        return VideoRepository.fetch_videos()
 
     @staticmethod
     def create_video(yt_unique_id, title, description, published_at, thumbnail_url):

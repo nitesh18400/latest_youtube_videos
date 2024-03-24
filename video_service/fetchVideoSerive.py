@@ -1,8 +1,10 @@
 from datetime import datetime
+from typing import List
 
 from googleapiclient.discovery import build
 
 from video_service.constants import SEARCH_QUERY
+from video_service.models import GoogleAPIClientKey
 from video_service.service import YouTubeAPIService, VideoService
 from video_service.serviceBase import ServiceBase
 
@@ -13,7 +15,8 @@ class FetchVideoService(ServiceBase):
         super().__init__()
         self._youtube_api_service: YouTubeAPIService = YouTubeAPIService.get_singleton()
         self._video_service: VideoService = VideoService.get_singleton()
-        self.api_key = self.get_active_api_key()
+        self.api_key: GoogleAPIClientKey = self.get_active_api_key()
+        self.api_keys: List[GoogleAPIClientKey] = self.get_all_active_api_keys()
 
     @classmethod
     def create_singleton(cls):
@@ -26,16 +29,35 @@ class FetchVideoService(ServiceBase):
         else:
             raise Exception("No active API key found")
 
+    def get_all_active_api_keys(self):
+        api_keys = self._youtube_api_service.get_all_active_api_keys()
+        if api_keys:
+            return list(api_keys)
+        else:
+            raise Exception("No active API keys found")
+
     def fetch_and_store_videos(self, search_query: str = SEARCH_QUERY, max_results: int = 10):
-        youtube = build('youtube', 'v3', developerKey=self.api_key)
-        request = youtube.search().list(
-            part='snippet',
-            type='video',
-            q=search_query,
-            maxResults=max_results
-        )
-        response = request.execute()
-        self.store_videos(response)
+        response = None
+        for api_key in self.api_keys:
+            youtube = build('youtube', 'v3', developerKey=api_key)
+            request = youtube.search().list(
+                part='snippet',
+                type='video',
+                q=search_query,
+                maxResults=max_results
+            )
+            response = request.execute()
+            try:
+                if response['items']:
+                    break
+            except Exception as e:
+                print(f"Error occurred while fetching videos: {str(e)}")
+                if 'quota' in response.lower():
+                    continue
+                response = None
+                break
+        if response is not None:
+            self.store_videos(response)
         return "Videos fetched and stored successfully."
 
     def store_videos(self, response):
@@ -45,7 +67,7 @@ class FetchVideoService(ServiceBase):
                 video_title = snippet['title']
                 description = snippet['description']
                 published_at = datetime.strptime(snippet['publishedAt'], '%Y-%m-%dT%H:%M:%SZ')
-                thumbnail_url = snippet['thumbnails']['default']['url']
+                thumbnail_url = snippet['thumbnails']['default']['high']
                 yt_unique_id = item['id']['videoId']
 
                 if self._video_service.fetch_video(yt_unique_id):
@@ -60,6 +82,4 @@ class FetchVideoService(ServiceBase):
                     thumbnail_url=thumbnail_url
                 )
         except Exception as e:
-            if 'quota' in str(e).lower():
-                self._youtube_api_service.deactivate_api_key(self.api_key)
             print(f"Error occurred while storing videos: {str(e)}, Response: {response}")

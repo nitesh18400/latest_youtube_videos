@@ -1,0 +1,42 @@
+{% load static %}
+<header class="page-header" role="banner">
+    <!-- we need this logo when user switches to nav-function-top -->
+    <!-- DOC: nav menu layout change shortcut -->
+    <div class="hidden-md-down dropdown-icon-menu position-relative">
+        <a href="#" class="header-btn btn js-waves-off" data-action="toggle"
+           data-class="nav-function-hidden" title="Hide Navigation">
+            <i class="ni ni-menu"></i>
+        </a>
+    </div>
+
+</header>
+
+
+<script src="{% static 'js/toastr.min.js' %}"></script>
+
+<script>
+    $(document).ready(function () {
+        //Docuemnt Ready
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": true,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": true,
+            "onclick": null,
+            "showDuration": 300,
+            "hideDuration": 100,
+            "timeOut": 3000,
+            "extendedTimeOut": 1000,
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        }
+
+
+    });
+
+
+</script>

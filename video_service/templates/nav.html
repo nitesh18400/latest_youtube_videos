@@ -1,0 +1,72 @@
+{% load static %}
+<aside class="page-sidebar">
+    <div class="page-logo">
+        <a href="/" class="page-logo-link press-scale-down d-flex align-items-center position-relative">
+            <span class="page-logo-text mr-1">Youtube Video Service</span>
+            <span class="position-absolute text-white opacity-50 small pos-top pos-right mr-2 mt-n2"></span>
+            <span class="position-absolute text-white opacity-50 small pos-top pos-right mr-2 mt-n2"></span>
+        </a>
+    </div>
+    <!-- BEGIN PRIMARY NAVIGATION -->
+    <nav id="js-primary-nav" class="primary-nav" role="navigation">
+        <ul id="js-nav-menu" class="nav-menu">
+            <li class="open">
+                <a title="config" data-filter-tags="Search User" class="waves-effect waves-themed"
+                   aria-expanded="false">
+                    <i class="fal fa-search"></i>
+                    <span class="nav-link-text" style="color: white"> Videos </span>
+                </a>
+                <ul style="display: block">
+                    <li id="latest_videos">
+                        <a onclick="navigation('latest_videos')">
+                            <span class="nav-link-text"> Latest Videos </span>
+                        </a>
+                    </li>
+                    <li id="search_videos">
+                        <a onclick="navigation('search_videos')">
+                            <span class="nav-link-text"> Search Videos </span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="open">
+                <a title="config" data-filter-tags="Search User" class="waves-effect waves-themed"
+                   aria-expanded="false">
+                    <i class="fal fa-pen"></i>
+                    <span class="nav-link-text" style="color: white"> Api Keys</span>
+                </a>
+                <ul style="display: block">
+                    <li id="add_keys">
+                        <a onclick="navigation('add_keys')">
+                            <span class="nav-link-text"> Add Keys </span>
+                        </a>
+                    </li>
+
+                </ul>
+            </li>
+        </ul>
+    </nav>
+    <!-- END PRIMARY NAVIGATION -->
+    <!-- NAV FOOTER -->
+    <!-- END NAV FOOTER -->
+</aside>
+
+<script>
+    const path = window.location.pathname.replace(/\//g, '');
+    $(document).ready(function () {
+        switch (path) {
+            case 'latest_videos':
+                $('#latest_videos').addClass('active');
+                break;
+            case 'search_videos':
+                $('#search_videos').addClass('active');
+                break;
+            case 'add_keys':
+                $('#add_keys').addClass('active');
+                break;
+
+            default:
+                break;
+        }
+    });
+</script>

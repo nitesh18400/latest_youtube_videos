@@ -15,6 +15,10 @@ class GoogleAPIClientKeyRepository(RepoBase):
         return GoogleAPIClientKey.objects.filter(active=True).first()
 
     @staticmethod
+    def get_all_active_api_keys():
+        return GoogleAPIClientKey.objects.filter(active=True)
+
+    @staticmethod
     def deactivate_api_key(api_key: GoogleAPIClientKey):
         api_key.active = False
         api_key.save()
@@ -51,3 +55,7 @@ class VideoRepository(RepoBase):
     @staticmethod
     def fetch_video(yt_unique_id):
         return Video.objects.filter(yt_unique_id=yt_unique_id).first()
+
+    @staticmethod
+    def fetch_videos():
+        return Video.objects.all().order_by('-published_at')
