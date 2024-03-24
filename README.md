@@ -2,6 +2,8 @@
 
 This project is aimed at displaying the latest YouTube videos using a Django web application. It utilizes Celery for background task processing and Redis as a message broker.
 
+Predefined Search Topic: `IPL 2024`
+
 ## Services
 
 ### Web Service
