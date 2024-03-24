@@ -11,9 +11,9 @@ class FetchVideoService(ServiceBase):
 
     def __init__(self):
         super().__init__()
-        self.api_key = self.get_active_api_key()
         self._youtube_api_service: YouTubeAPIService = YouTubeAPIService.get_singleton()
         self._video_service: VideoService = VideoService.get_singleton()
+        self.api_key = self.get_active_api_key()
 
     @classmethod
     def create_singleton(cls):
