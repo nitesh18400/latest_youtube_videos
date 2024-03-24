@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import List
 
 from googleapiclient.discovery import build
@@ -41,12 +41,15 @@ class FetchVideoService(ServiceBase):
         for api_key in self.api_keys:
             youtube = build('youtube', 'v3', developerKey=api_key)
             request = youtube.search().list(
-                part='snippet',
+                part='id,snippet',
                 type='video',
+                order='date',
                 q=search_query,
+                publishedAfter=(datetime.now() - timedelta(days=1)).strftime('%Y-%m-%dT%H:%M:%SZ'),
                 maxResults=max_results
             )
             response = request.execute()
+            print("response:", response)
             try:
                 if response['items']:
                     break
@@ -67,7 +70,7 @@ class FetchVideoService(ServiceBase):
                 video_title = snippet['title']
                 description = snippet['description']
                 published_at = datetime.strptime(snippet['publishedAt'], '%Y-%m-%dT%H:%M:%SZ')
-                thumbnail_url = snippet['thumbnails']['default']['high']
+                thumbnail_url = snippet['thumbnails']['high']
                 yt_unique_id = item['id']['videoId']
 
                 if self._video_service.fetch_video(yt_unique_id):
